@@ -4,12 +4,16 @@ import '../repositories/auth_repository.dart';
 
 class ProfileAndSettingsScreen extends StatefulWidget {
   final String langCode;
+  final bool isExpertMode;
   final VoidCallback onToggleLanguage;
+  final VoidCallback onToggleMode;
 
   const ProfileAndSettingsScreen({
     super.key,
     required this.langCode,
+    required this.isExpertMode,
     required this.onToggleLanguage,
+    required this.onToggleMode,
   });
 
   @override
@@ -97,13 +101,13 @@ class _ProfileAndSettingsScreenState extends State<ProfileAndSettingsScreen> {
                   const SizedBox(height: 12),
 
                   if (_isEditing) ...[
-                    TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'Name', border: OutlinedInputBorder())),
+                    TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'Name', border: OutlineInputBorder())),
                     const SizedBox(height: 8),
-                    TextField(controller: _farmNameController, decoration: const InputDecoration(labelText: 'Farm Name', border: OutlinedInputBorder())),
+                    TextField(controller: _farmNameController, decoration: const InputDecoration(labelText: 'Farm Name', border: OutlineInputBorder())),
                     const SizedBox(height: 8),
-                    TextField(controller: _locationController, decoration: const InputDecoration(labelText: 'Location', border: OutlinedInputBorder())),
+                    TextField(controller: _locationController, decoration: const InputDecoration(labelText: 'Location', border: OutlineInputBorder())),
                     const SizedBox(height: 8),
-                    TextField(controller: _soilTypeController, decoration: const InputDecoration(labelText: 'Soil Type', border: OutlinedInputBorder())),
+                    TextField(controller: _soilTypeController, decoration: const InputDecoration(labelText: 'Soil Type', border: OutlineInputBorder())),
                   ] else ...[
                     _buildProfileItem(Icons.person, 'Name', user?.fullName ?? ''),
                     _buildProfileItem(Icons.agriculture, 'Farm Name', user?.farmName ?? ''),
@@ -146,6 +150,19 @@ class _ProfileAndSettingsScreenState extends State<ProfileAndSettingsScreen> {
                   ),
                 ],
               ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // App Mode Toggle Card
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: SwitchListTile(
+              title: Text(AppStrings.get(lang, 'expertMode'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(AppStrings.get(lang, 'expertModeDesc'), style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              secondary: const Icon(Icons.settings_applications, color: Colors.blue),
+              value: widget.isExpertMode,
+              onChanged: (val) => widget.onToggleMode(),
             ),
           ),
           const SizedBox(height: 16),

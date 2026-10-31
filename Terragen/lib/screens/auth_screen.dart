@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   controller: resetController,
                   decoration: InputDecoration(
                     labelText: AppStrings.get(widget.langCode, 'email'),
-                    border: const OutlinedInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 if (isOtpSent) ...[
@@ -127,7 +127,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       labelText: AppStrings.get(lang, 'fullName'),
                       prefixIcon: const Icon(Icons.person),
-                      border: const OutlinedInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -137,7 +137,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       labelText: AppStrings.get(lang, 'phoneNumber'),
                       prefixIcon: const Icon(Icons.phone),
-                      border: const OutlinedInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -146,7 +146,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       labelText: AppStrings.get(lang, 'farmName'),
                       prefixIcon: const Icon(Icons.agriculture),
-                      border: const OutlinedInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -155,7 +155,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       labelText: AppStrings.get(lang, 'farmLocation'),
                       prefixIcon: const Icon(Icons.location_on),
-                      border: const OutlinedInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -164,7 +164,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     decoration: InputDecoration(
                       labelText: AppStrings.get(lang, 'soilType'),
                       prefixIcon: const Icon(Icons.science),
-                      border: const OutlinedInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -176,7 +176,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.get(lang, 'email'),
                     prefixIcon: const Icon(Icons.email),
-                    border: const OutlinedInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -187,7 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.get(lang, 'password'),
                     prefixIcon: const Icon(Icons.lock),
-                    border: const OutlinedInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 8),

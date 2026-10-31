@@ -28,6 +28,20 @@ class LanguageNotifier extends ChangeNotifier {
   }
 }
 
+class AppModeNotifier extends ChangeNotifier {
+  static final AppModeNotifier _instance = AppModeNotifier._internal();
+  factory AppModeNotifier() => _instance;
+  AppModeNotifier._internal();
+
+  bool _isExpertMode = false;
+  bool get isExpertMode => _isExpertMode;
+
+  void toggleMode() {
+    _isExpertMode = !_isExpertMode;
+    notifyListeners();
+  }
+}
+
 class TerragenFlutterApp extends StatefulWidget {
   const TerragenFlutterApp({super.key});
 
@@ -37,18 +51,21 @@ class TerragenFlutterApp extends StatefulWidget {
 
 class _TerragenFlutterAppState extends State<TerragenFlutterApp> {
   final LanguageNotifier _languageNotifier = LanguageNotifier();
+  final AppModeNotifier _appModeNotifier = AppModeNotifier();
   final AuthRepository _authRepository = AuthRepository();
 
   @override
   void initState() {
     super.initState();
     _languageNotifier.addListener(_onStateChanged);
+    _appModeNotifier.addListener(_onStateChanged);
     _authRepository.addListener(_onStateChanged);
   }
 
   @override
   void dispose() {
     _languageNotifier.removeListener(_onStateChanged);
+    _appModeNotifier.removeListener(_onStateChanged);
     _authRepository.removeListener(_onStateChanged);
     super.dispose();
   }
@@ -67,7 +84,10 @@ class _TerragenFlutterAppState extends State<TerragenFlutterApp> {
         colorSchemeSeed: Colors.green,
       ),
       home: _authRepository.isLoggedIn
-          ? MainNavigationScreen(languageNotifier: _languageNotifier)
+          ? MainNavigationScreen(
+              languageNotifier: _languageNotifier,
+              appModeNotifier: _appModeNotifier,
+            )
           : AuthScreen(langCode: _languageNotifier.langCode),
     );
   }
@@ -75,7 +95,12 @@ class _TerragenFlutterAppState extends State<TerragenFlutterApp> {
 
 class MainNavigationScreen extends StatefulWidget {
   final LanguageNotifier languageNotifier;
-  const MainNavigationScreen({super.key, required this.languageNotifier});
+  final AppModeNotifier appModeNotifier;
+  const MainNavigationScreen({
+    super.key,
+    required this.languageNotifier,
+    required this.appModeNotifier,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
@@ -87,22 +112,26 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final lang = widget.languageNotifier.langCode;
+    final isExpertMode = widget.appModeNotifier.isExpertMode;
 
     final pages = [
       DashboardScreen(
         langCode: lang,
+        isExpertMode: isExpertMode,
         onNavigate: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
       ),
-      SoilAnalysisScreen(langCode: lang),
-      AiAdvisoryScreen(langCode: lang),
-      DeviceManagementScreen(langCode: lang),
+      SoilAnalysisScreen(langCode: lang, isExpertMode: isExpertMode),
+      AiAdvisoryScreen(langCode: lang, isExpertMode: isExpertMode),
+      DeviceManagementScreen(langCode: lang, isExpertMode: isExpertMode),
       ProfileAndSettingsScreen(
         langCode: lang,
+        isExpertMode: isExpertMode,
         onToggleLanguage: widget.languageNotifier.toggleLanguage,
+        onToggleMode: widget.appModeNotifier.toggleMode,
       ),
     ];
 

@@ -5,7 +5,8 @@ import '../repositories/device_repository.dart';
 
 class DeviceManagementScreen extends StatefulWidget {
   final String langCode;
-  const DeviceManagementScreen({super.key, required this.langCode});
+  final bool isExpertMode;
+  const DeviceManagementScreen({super.key, required this.langCode, required this.isExpertMode});
 
   @override
   State<DeviceManagementScreen> createState() => _DeviceManagementScreenState();
@@ -44,17 +45,17 @@ class _DeviceManagementScreenState extends State<DeviceManagementScreen> {
           children: [
             TextField(
               controller: nameController,
-              decoration: InputDecoration(labelText: AppStrings.get(widget.langCode, 'deviceName'), border: const OutlinedInputBorder()),
+              decoration: InputDecoration(labelText: AppStrings.get(widget.langCode, 'deviceName'), border: const OutlineInputBorder()),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: idController,
-              decoration: InputDecoration(labelText: AppStrings.get(widget.langCode, 'deviceId'), border: const OutlinedInputBorder()),
+              decoration: InputDecoration(labelText: AppStrings.get(widget.langCode, 'deviceId'), border: const OutlineInputBorder()),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: locationController,
-              decoration: const InputDecoration(labelText: 'Field Location', border: OutlinedInputBorder()),
+              decoration: const InputDecoration(labelText: 'Field Location', border: OutlineInputBorder()),
             ),
           ],
         ),
@@ -134,7 +135,8 @@ class _DeviceManagementScreenState extends State<DeviceManagementScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(device.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                  Text('ID: ${device.id}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                  if (widget.isExpertMode)
+                                    Text('ID: ${device.id}', style: const TextStyle(fontSize: 12, color: Colors.grey)),
                                 ],
                               )
                             ],
@@ -163,30 +165,34 @@ class _DeviceManagementScreenState extends State<DeviceManagementScreen> {
                               Text(device.location, style: const TextStyle(fontSize: 12)),
                             ],
                           ),
-                          Row(
-                            children: [
-                              const Icon(Icons.battery_full, size: 14, color: Colors.grey),
-                              const SizedBox(width: 4),
-                              Text('Battery: ${device.batteryLevel}%', style: const TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.sync, size: 14, color: Colors.grey),
-                              const SizedBox(width: 4),
-                              Text('Sync: ${device.lastSyncTime}', style: const TextStyle(fontSize: 12)),
-                            ],
-                          ),
+                          if (widget.isExpertMode) ...[
+                            Row(
+                              children: [
+                                const Icon(Icons.battery_full, size: 14, color: Colors.grey),
+                                const SizedBox(width: 4),
+                                Text('Battery: ${device.batteryLevel}%', style: const TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Icon(Icons.sync, size: 14, color: Colors.grey),
+                                const SizedBox(width: 4),
+                                Text('Sync: ${device.lastSyncTime}', style: const TextStyle(fontSize: 12)),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => _deviceRepo.toggleStatus(device.id),
-                          child: const Text('Simulate Node Status Toggle'),
-                        ),
-                      )
+                      if (widget.isExpertMode) ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () => _deviceRepo.toggleStatus(device.id),
+                            child: const Text('Simulate Node Status Toggle'),
+                          ),
+                        )
+                      ]
                     ],
                   ),
                 ),

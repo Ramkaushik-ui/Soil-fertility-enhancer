@@ -66,6 +66,9 @@ class AppStrings {
       'npkGuide': 'Understanding NPK & pH',
       'faqs': 'Frequently Asked Questions',
       'logout': 'Logout',
+      'generateReport': 'Generate PDF Report',
+      'expertMode': 'Expert Mode',
+      'expertModeDesc': 'Show raw sensor telemetry, graphs, and exact match percentages',
     },
     'ta': {
       'appName': 'டெர்ராஜென்',
@@ -133,6 +136,9 @@ class AppStrings {
       'npkGuide': 'NPK & pH புரிந்து கொள்ளல்',
       'faqs': 'அடிக்கடி கேட்கப்படும் கேள்விகள்',
       'logout': 'வெளியேறு',
+      'generateReport': 'PDF அறிக்கை உருவாக்கு',
+      'expertMode': 'நிபுணர் முறை',
+      'expertModeDesc': 'மூல தரவு, வரைபடங்கள் மற்றும் சரியான சதவீதங்களைக் காட்டு',
     }
   };
 

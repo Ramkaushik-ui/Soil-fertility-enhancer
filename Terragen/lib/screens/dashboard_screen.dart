@@ -5,14 +5,17 @@ import '../repositories/ai_recommendation_engine.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/device_repository.dart';
 import '../repositories/soil_repository.dart';
+import '../utils/pdf_report_generator.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String langCode;
+  final bool isExpertMode;
   final Function(int) onNavigate;
 
   const DashboardScreen({
     super.key,
     required this.langCode,
+    required this.isExpertMode,
     required this.onNavigate,
   });
 
@@ -80,6 +83,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     '${user?.farmName ?? 'Farm'} • ${user?.farmLocation ?? 'Location'}',
                     style: TextStyle(fontSize: 13, color: Colors.green.shade800),
                   ),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await PdfReportGenerator.generateAndOpenReport();
+                    },
+                    icon: const Icon(Icons.picture_as_pdf, size: 18),
+                    label: Text(AppStrings.get(lang, 'generateReport')),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade800,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -120,14 +135,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '${soil.healthIndex} / 100',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: soil.healthIndex >= 75 ? Colors.green.shade800 : Colors.orange.shade800,
+                            if (widget.isExpertMode)
+                              Text(
+                                '${soil.healthIndex} / 100',
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: soil.healthIndex >= 75 ? Colors.green.shade800 : Colors.orange.shade800,
+                                ),
+                              )
+                            else
+                              Text(
+                                soil.healthStatus,
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: soil.healthIndex >= 75 ? Colors.green.shade800 : Colors.orange.shade800,
+                                ),
                               ),
-                            ),
                             Text(
                               AppStrings.get(lang, 'soilHealthStatus', params: {'status': soil.healthStatus}),
                               style: const TextStyle(fontWeight: FontWeight.w500),
@@ -153,13 +178,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         )
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    LinearProgressIndicator(
-                      value: soil.healthIndex / 100.0,
-                      backgroundColor: Colors.grey.shade300,
-                      color: soil.healthIndex >= 75 ? Colors.green.shade700 : Colors.orange.shade700,
-                      minHeight: 8,
-                    ),
+                    if (widget.isExpertMode) ...[
+                      const SizedBox(height: 12),
+                      LinearProgressIndicator(
+                        value: soil.healthIndex / 100.0,
+                        backgroundColor: Colors.grey.shade300,
+                        color: soil.healthIndex >= 75 ? Colors.green.shade700 : Colors.orange.shade700,
+                        minHeight: 8,
+                      ),
+                    ]
                   ],
                 ),
               ),
@@ -167,24 +194,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Live NPK Grid
-          Text(
-            AppStrings.get(lang, 'liveNpkSummary'),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(child: _buildMetricChip('N', '${soil.nitrogen.toInt()} ppm', 'Nitrogen')),
-              const SizedBox(width: 6),
-              Expanded(child: _buildMetricChip('P', '${soil.phosphorus.toInt()} ppm', 'Phosphorus')),
-              const SizedBox(width: 6),
-              Expanded(child: _buildMetricChip('K', '${soil.potassium.toInt()} ppm', 'Potassium')),
-              const SizedBox(width: 6),
-              Expanded(child: _buildMetricChip('pH', '${soil.ph}', 'pH Level')),
-            ],
-          ),
-          const SizedBox(height: 16),
+          if (widget.isExpertMode) ...[
+            // Live NPK Grid (Expert Only)
+            Text(
+              AppStrings.get(lang, 'liveNpkSummary'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: _buildMetricChip('N', '${soil.nitrogen.toInt()} ppm', 'Nitrogen')),
+                const SizedBox(width: 6),
+                Expanded(child: _buildMetricChip('P', '${soil.phosphorus.toInt()} ppm', 'Phosphorus')),
+                const SizedBox(width: 6),
+                Expanded(child: _buildMetricChip('K', '${soil.potassium.toInt()} ppm', 'Potassium')),
+                const SizedBox(width: 6),
+                Expanded(child: _buildMetricChip('pH', '${soil.ph}', 'pH Level')),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ] else ...[
+            // Simplified Nutrients Card (Normal Only)
+            Card(
+              color: Colors.blue.shade50,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.water_drop, color: Colors.blue, size: 32),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Nutrient Status', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          Text(soil.healthIndex >= 60 ? 'Levels are optimal' : 'Fertilizer needed', style: const TextStyle(color: Colors.blueGrey)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
 
           // AI Quick Insight
           InkWell(

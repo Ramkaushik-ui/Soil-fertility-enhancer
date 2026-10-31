@@ -5,7 +5,8 @@ import '../repositories/soil_repository.dart';
 
 class AiAdvisoryScreen extends StatefulWidget {
   final String langCode;
-  const AiAdvisoryScreen({super.key, required this.langCode});
+  final bool isExpertMode;
+  const AiAdvisoryScreen({super.key, required this.langCode, required this.isExpertMode});
 
   @override
   State<AiAdvisoryScreen> createState() => _AiAdvisoryScreenState();
@@ -97,17 +98,20 @@ class _AiAdvisoryScreenState extends State<AiAdvisoryScreen> with SingleTickerPr
                                   ],
                                 ),
                               ),
-                              CircleAvatar(
-                                backgroundColor: crop.matchPercentage >= 85 ? Colors.green.shade100 : Colors.orange.shade100,
-                                child: Text(
-                                  '${crop.matchPercentage}%',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: crop.matchPercentage >= 85 ? Colors.green.shade800 : Colors.orange.shade800,
+                              if (widget.isExpertMode)
+                                CircleAvatar(
+                                  backgroundColor: crop.matchPercentage >= 85 ? Colors.green.shade100 : Colors.orange.shade100,
+                                  child: Text(
+                                    '${crop.matchPercentage}%',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: crop.matchPercentage >= 85 ? Colors.green.shade800 : Colors.orange.shade800,
+                                    ),
                                   ),
-                                ),
-                              )
+                                )
+                              else
+                                Icon(Icons.check_circle, color: crop.matchPercentage >= 85 ? Colors.green : Colors.orange)
                             ],
                           ),
                           const SizedBox(height: 12),
@@ -209,7 +213,7 @@ class _AiAdvisoryScreenState extends State<AiAdvisoryScreen> with SingleTickerPr
 
                         TextField(
                           controller: _cropController,
-                          decoration: const InputDecoration(labelText: 'Crop Name', border: OutlinedInputBorder()),
+                          decoration: const InputDecoration(labelText: 'Crop Name', border: OutlineInputBorder()),
                         ),
                         const SizedBox(height: 12),
 
@@ -218,14 +222,14 @@ class _AiAdvisoryScreenState extends State<AiAdvisoryScreen> with SingleTickerPr
                             Expanded(
                               child: TextField(
                                 controller: _expectedYieldController,
-                                decoration: const InputDecoration(labelText: 'Expected Yield', border: OutlinedInputBorder()),
+                                decoration: const InputDecoration(labelText: 'Expected Yield', border: OutlineInputBorder()),
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: TextField(
                                 controller: _actualYieldController,
-                                decoration: const InputDecoration(labelText: 'Actual Yield', border: OutlinedInputBorder()),
+                                decoration: const InputDecoration(labelText: 'Actual Yield', border: OutlineInputBorder()),
                               ),
                             ),
                           ],
@@ -234,7 +238,7 @@ class _AiAdvisoryScreenState extends State<AiAdvisoryScreen> with SingleTickerPr
 
                         TextField(
                           controller: _fertilizerController,
-                          decoration: const InputDecoration(labelText: 'Fertilizer Used', border: OutlinedInputBorder()),
+                          decoration: const InputDecoration(labelText: 'Fertilizer Used', border: OutlineInputBorder()),
                         ),
                         const SizedBox(height: 12),
 
